@@ -2,13 +2,14 @@ const express = require("express")
 const { Server } = require("socket.io")
 const http = require("http")
 const cors = require("cors")
+require("dotenv").config()
 
 
 const app = express()
 const server = http.createServer(app)
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:3000", // Allow Next.js frontend
+        origin: process.env.FRONT_END, // Allow Next.js frontend
         methods: ["GET", "POST"]
     }
 })
@@ -29,6 +30,6 @@ io.on("connection", (socket) => {
 })
 
 
-server.listen(8080, () => {
+server.listen(process.env.PORT || 8080, () => {
     console.log("server")
 })

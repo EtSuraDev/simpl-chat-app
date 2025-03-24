@@ -1,16 +1,19 @@
+
+
 'use client'
 
-import Image from "next/image";
 import Input from "@/components/input";
 import ChatArea from "@/components/chatArea";
 import Header from "@/components/header";
 import { io } from "socket.io-client";
 import { useState, useEffect } from "react";
-const socket = io("http://localhost:8080");
+const socket = io(process.env.NEXT_PUBLIC_BACK_END);
 
 export default function Home() {
     const [messages, setMessage] = useState([])
     const [inputValue, setInputValue] = useState("")
+
+    console.log(process.env.NEXT_PUBLIC_BACK_END)
 
 
 
@@ -27,7 +30,7 @@ export default function Home() {
         return () => {
             socket.off("message", messageListener);
         };
-    }, [messages]);
+    }, []);
 
 
     const sendMessage = () => {
