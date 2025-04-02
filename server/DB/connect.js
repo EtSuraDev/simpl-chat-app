@@ -1,18 +1,14 @@
-const mysql = require("mysql")
+const { Sequelize } = require("sequelize")
 
-
-const pool = mysql.createPool({
-    host: "localhost",
-    password: "",
-    database: "chat_app",
-    user: "root"
+const sequelize = new Sequelize("chat_app", "root", "", {
+    dialect: "mysql"
 })
 
 
-pool.getConnection((err) => {
-    if (err) throw err
-    console.log("Database is connect")
-})
+
+sequelize.authenticate()
+    .then(() => console.log('Database connected...'))
+    .catch(err => console.error('Error connecting to the database:', err));
 
 
-module.exports = pool
+module.exports = sequelize
