@@ -4,24 +4,20 @@ const http = require("http")
 const cors = require("cors")
 const authRouter = require("./route/auth.route.js")
 const cookieParser = require("cookie-parser")
+const getMsg = require("./route/getMsg.route.js")
 
 // DATABASE CONNECTION
-const connect_DB = require("./DB/connect.js")
+const connect_DB = require("./config/connectDB.js")
 
 // DATABASE TABLE
-const user = require("./DB/model.js")
+const { user } = require("./model/model.js")
 
 require("dotenv").config()
 
 
 const app = express()
 const server = http.createServer(app)
-const io = new Server(server, {
-    cors: {
-        origin: process.env.FRONT_END, // Allow Next.js frontend
-        methods: ["GET", "POST"]
-    }
-})
+
 app.use(cookieParser());
 app.use(cors({
     origin: process.env.FRONT_END,
@@ -29,20 +25,12 @@ app.use(cors({
 }))
 app.use(express.json());
 app.use("/auth", authRouter)
+app.use("/", getMsg)
 
 
 
-// io.on("connection", (socket) => {
-//     console.log("user connected")
-//     socket.on("message", (m) => {
-//         console.log("Received message:", m);
-//         io.emit("message", m);
-//     })
 
-//     socket.on("disconnect", () => {
-//         console.log("A user disconnected");
-//     });
-// })
+
 
 
 
@@ -51,8 +39,13 @@ app.use("/auth", authRouter)
 
 
 app.use("*", (req, res) => {
-    res.send("<h1>404 NOT FOUND</h1>")
+    res.status(404).json({ success: false, msg: "NOT FOUND" })
 })
 server.listen(process.env.PORT || 8080, () => {
     console.log(`server listning on ${process.env.PORT}`)
 })
+
+
+const socket = require("./config/socet.io.js")
+socket(server)
+module.exports = { app, server }
