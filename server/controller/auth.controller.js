@@ -48,8 +48,8 @@ const signup = async(req, res) => {
         res.cookie("token", token, {
                 httpOnly: true,
                 secure: process.env.DEPLOYD === "true",
-                sameSite: "Lax",
-                maxAge: 60 * 60 * 6000
+                sameSite: process.env.DEPLOYED === "true" ? "None" : "Lax",
+                maxAge: 6 * 60 * 60 * 1000
             })
             // ACCOUNT SUCCESSESFUL CREATED
         res.status(201).json({ successes: true, msg: "account successesful created" })
@@ -105,8 +105,8 @@ const login = async(req, res) => {
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.DEPLOYD == "true",
-            sameSite: "None",
-            maxAge: 60 * 60 * 6000
+            sameSite: process.env.DEPLOYED === "true" ? "None" : "Lax",
+            maxAge: 6 * 60 * 60 * 1000
         })
 
 

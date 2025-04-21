@@ -10,6 +10,7 @@ module.exports = async(req, res, next) => {
         }
         const userName = jwt.verify(token, process.env.SECRET_KEY)
         req.user = userName
+        console.log(userName)
         next()
     } catch (error) {
         res.status(500).json({ success: false, msg: "server faild" })

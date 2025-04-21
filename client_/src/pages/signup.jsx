@@ -12,7 +12,6 @@ function Signup() {
     const [serverRes, setServerRes] = useState(null)
     const navigate = useNavigate()
 
-    console.log(import.meta.env.VITE_BACK_END)
 
 
     const formik = useFormik({
@@ -26,10 +25,8 @@ function Signup() {
                                                 {userName: values.userName, password: values.password},
                                                 { withCredentials: true }
                                             )
-                console.log(res.data)
                 navigate("/", {replace: true})
             } catch (error) {
-                console.log(error.response.data)
                 setServerRes(error.response.data.msg)
             }
         },
