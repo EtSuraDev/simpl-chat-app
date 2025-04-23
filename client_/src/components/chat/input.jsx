@@ -13,7 +13,6 @@ function Input() {
   const setInput = useChatStore((state) => state.setInput)
   const input = useChatStore((state) => state.input)
 
-  console.log(input)
   const handleEmojiClick = (emojiData, event) => {
     setInput(prev => prev + emojiData.emoji);
   };
@@ -25,9 +24,9 @@ function Input() {
         value={input}
         onChange={(e) => setInput(e.target.value)}
         className=' w-[80%] focus:outline-none ' />
-        <div className={` max-h-[400px] max-w-[300px] ${displayEmojiPicker ? "block":"hidden"  } absolute z-50 bottom-24 `}>
+        {/* <div className={` max-h-[400px] max-w-[300px] ${displayEmojiPicker ? "block":"hidden"  } absolute z-50 bottom-24 `}>
           <EmojiPicker onEmojiClick={handleEmojiClick}  />
-        </div>
+        </div> */}
         {
             displayEmojiPicker? 
             < MdClear

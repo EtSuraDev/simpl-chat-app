@@ -19,6 +19,8 @@ module.exports = async(data, socket) => {
             userName: userName,
             replayTo: null
         })
+        console.log("created ===>")
+
     } catch (error) {
         console.log(`error no message ${error} `)
         socket.disconnect()

@@ -19,7 +19,6 @@ const send = (msg) => {
 
 const listen = () => {
     io.on("message", (msg) => {
-        console.log("listen")
         const { userName } = useUserDataStore.getState();
         const { clearPendingMessages, addMessage } = useChatStore.getState();
 

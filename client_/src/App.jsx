@@ -11,8 +11,7 @@ import useChatStore from "./store/useChatStore"
 
 function App() {
   const router = useNavigate()
-  const x = useChatStore(state => state.pendingMessages)
-  console.log(x)
+  const messages = useChatStore(state => state.messages)
   useEffect(() => {
     createConnection()
     chat.listen()

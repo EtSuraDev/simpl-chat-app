@@ -13,10 +13,9 @@ function setupSocet(server) {
 
     io.on("connection", (socket) => {
         console.log("user connected")
-        socket.on("message", (m) => {
+        socket.on("message", async(m) => {
             saveMsg(m, socket)
-            console.log("Received message:", m);
-            io.emit("message", m);
+            io.emit("message", {...m, createdAt: new Date().toISOString() });
         })
 
         socket.on("disconnect", () => {
