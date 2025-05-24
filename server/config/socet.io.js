@@ -1,8 +1,6 @@
 const { Server } = require("socket.io")
-const saveMsg = require("../controller/msg.controller")
 
-function setupSocet(server) {
-
+const createSocket = (server) => {
     const io = new Server(server, {
         cors: {
             origin: "*",
@@ -10,20 +8,9 @@ function setupSocet(server) {
         }
     })
 
-
-    io.on("connection", (socket) => {
-        console.log("user connected")
-        socket.on("message", async(m) => {
-            saveMsg(m, socket)
-            io.emit("message", {...m, createdAt: new Date().toISOString() });
-        })
-
-        socket.on("disconnect", () => {
-            console.log("A user disconnected");
-        });
-    })
-
+    return io
 }
 
 
-module.exports = setupSocet
+
+module.exports = createSocket

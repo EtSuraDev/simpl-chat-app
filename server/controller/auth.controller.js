@@ -1,4 +1,4 @@
-const { user, dev } = require("../model/model")
+const user = require("../model/users")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcryptjs")
 
@@ -6,8 +6,11 @@ const bcrypt = require("bcryptjs")
 const signup = async(req, res) => {
     try {
 
+        // STEP 1
         // CHECK "userName" and "password" ARE NOT NULL OR UNDEFIND
+        console.log("hello")
         const { userName, password } = req.body
+        console.log(req.body)
 
         if (!userName || !password) {
             res.status(400).json({
@@ -16,6 +19,8 @@ const signup = async(req, res) => {
             })
             return
         }
+
+        // STEP 2
         // CHECK IF USER EXIST
         const check_user = await user.findOne({
             where: { userName: userName }
@@ -29,29 +34,29 @@ const signup = async(req, res) => {
             return
         }
 
-
-        // USER NOT EXIST IN DATABASE SO WE CAN HASH THE PASSWORD AND CREATE USER IN DATABASE
+        // STEP 3
+        // USER NOT EXIST IN DATABASE SO WE CAN HASH THE PASSWORD AND CREATE USER TABLE IN DATABASE
         const salt = await bcrypt.genSalt(10)
         const hashPassword = await bcrypt.hash(password, 10)
-
-
         await user.create({
             userName,
             password: hashPassword
         })
 
-        // CREATE JWT 
+        // STEP 4
+        // CREATE JWT AND SEND JWT USING COOKIE
         const token = jwt.sign({ userName }, process.env.SECRET_KEY, {
-                expiresIn: "6h"
-            })
-            // SEND JWT USING COOKIE
+            expiresIn: "6h"
+        })
         res.cookie("token", token, {
-                httpOnly: true,
-                secure: process.env.DEPLOYD === "true",
-                sameSite: process.env.DEPLOYED === "true" ? "None" : "Lax",
-                maxAge: 6 * 60 * 60 * 1000
-            })
-            // ACCOUNT SUCCESSESFUL CREATED
+            httpOnly: true,
+            secure: process.env.DEPLOYD === "true",
+            sameSite: process.env.DEPLOYED === "true" ? "None" : "Lax",
+            maxAge: 6 * 60 * 60 * 1000
+        })
+
+        // STEP 5
+        // SEND SUCCESS MSG
         res.status(201).json({ successes: true, msg: "account successesful created" })
         return
 
@@ -67,9 +72,9 @@ const signup = async(req, res) => {
 
 const login = async(req, res) => {
     try {
-        const { userName, password } = req.body
-
+        // STEP 1
         // CHECK IF "userName" AND "password" IS NOT NULL OR UNDIFIND
+        const { userName, password } = req.body
         if (!userName || !password) {
             res.status(400).json({
                 successes: false,
@@ -78,6 +83,7 @@ const login = async(req, res) => {
             return
         }
 
+        // STEP 2
         // CHECK THE USER IS EXSIST
         const check_user = await user.findOne({
             where: { userName: userName }
@@ -87,8 +93,7 @@ const login = async(req, res) => {
             return
         }
 
-
-
+        // SETP 3
         // CHECK THE PASSWORD  IS CORRECT
         const check_password = await bcrypt.compare(password, check_user.password)
         if (!check_password) {
@@ -96,12 +101,11 @@ const login = async(req, res) => {
             return
         }
 
-
-        // CREATE JWT 
+        // STEP 4
+        // CREATE JWT AND SEND JWT USING COOKIE
         const token = jwt.sign({ userName }, process.env.SECRET_KEY, {
-                expiresIn: "6h"
-            })
-            // SEND JWT USING COOKIE
+            expiresIn: "6h"
+        })
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.DEPLOYD == "true",
@@ -109,7 +113,8 @@ const login = async(req, res) => {
             maxAge: 6 * 60 * 60 * 1000
         })
 
-
+        // STEP 5
+        // SEND SUCCESS MSG
         res.status(200).json({ successes: true, msg: "successesful login" })
     } catch (error) {
         res.status(500).json({ successes: false, msg: "server faild" })
@@ -119,9 +124,16 @@ const login = async(req, res) => {
 
 const signout = async(req, res) => {
     try {
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: process.env.DEPLOYED === "true",
+            sameSite: process.env.DEPLOYED === "true" ? "None" : "Lax",
+        });
 
+        res.status(200).json({ successes: true, msg: "Successfully signed out" });
     } catch (error) {
-
+        console.log(error);
+        res.status(500).json({ successes: false, msg: "Signout failed" });
     }
 }
 
